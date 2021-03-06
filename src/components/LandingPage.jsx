@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import Image from "./Image";
+import Spinner from "react-spinkit";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 const BASE_URL = `https://api.unsplash.com`;
@@ -18,19 +19,33 @@ const LandingPage = () => {
   }, []);
 
   const fetchRandomImages = () => {
-    axios.get(URL).then((res) => {
-      setImages([...images, ...res.data]);
-    });
+    axios
+      .get(URL)
+      .then((res) => {
+        setImages([...images, ...res.data]);
+      })
+      .catch((error) => {
+        alert("Sadly, we only have 50 calls per hour");
+      });
   };
+  if (!images) {
+    return <Spinner name="ball-spin-fade-loader" color="black" fadeIn="none" />;
+  }
 
   return (
     <>
       <InfiniteScroll
-        
         dataLength={images.length}
         next={fetchRandomImages}
         hasMore={true}
-        loader={<h4>Loading...</h4>}
+        loader={
+          <Spinner
+            className={classes.spinner}
+            name="ball-spin-fade-loader"
+            color="black"
+            fadeIn="none"
+          />
+        }
         style={{ overflow: "hidden" }}
       >
         <div className={classes.imageWrapper}>
@@ -60,6 +75,9 @@ const useStyles = createUseStyles({
     margin: "60px 40px",
     gridAutoFlow: "dense",
     gridGap: "10px",
+  },
+  spinner: {
+    left: "50%",
   },
 });
 export default LandingPage;

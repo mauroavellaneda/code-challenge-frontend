@@ -9,8 +9,7 @@ describe("Landing page interface", () => {
     cy.get('[data-cy="landing"]').children().should("have.length", 10);
   });
   it("should scroll to bottom and load more images", () => {
-    cy.scrollTo("bottom", { duration: 2000 });
+    cy.scrollTo("bottom", { duration: 3000 });
     cy.get('[data-cy="landing"]').children().should("have.length", 20);
-
   });
 });
