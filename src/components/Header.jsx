@@ -1,8 +1,6 @@
 import React from "react";
 import SearchIcon from "@material-ui/icons/Search";
 import { createUseStyles } from "react-jss";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faSearch, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import DynamicFeedIcon from "@material-ui/icons/DynamicFeed";
 
 const Header = () => {
