@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
 import Image from "./Image";
 import Spinner from "react-spinkit";
+import Axios from "axios";
 
 const API_KEY = process.env.REACT_APP_API_KEY;
-const BASE_URL = `https://api.unsplash.com`;
-const COUNT = 10;
-const URL = `${BASE_URL}/photos/random/?client_id=${API_KEY}&count=${COUNT}`;
 
 const LandingPage = () => {
   const classes = useStyles();
   const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetchRandomImages();
   }, []);
 
   const fetchRandomImages = () => {
-    axios
-      .get(URL)
+    Axios.get(
+      `https://api.unsplash.com/photos/?client_id=${API_KEY}&page=${page}`
+    )
       .then((res) => {
         setImages([...images, ...res.data]);
       })
-      .catch((error) => {
+      .catch(() => {
         alert("Sadly, we only have 50 calls per hour");
       });
   };
+
   if (!images) {
     return <Spinner name="ball-spin-fade-loader" color="black" fadeIn="none" />;
   }
@@ -35,8 +35,11 @@ const LandingPage = () => {
   return (
     <>
       <InfiniteScroll
-        dataLength={images.length}
-        next={fetchRandomImages}
+        dataLength={images}
+        next={() => {
+          fetchRandomImages();
+          setPage(page + 1);
+        }}
         hasMore={true}
         loader={
           <Spinner
@@ -46,18 +49,14 @@ const LandingPage = () => {
             fadeIn="none"
           />
         }
-        style={{ overflow: "hidden" }}
       >
         <div className={classes.imageWrapper}>
-          {images.map((image) => (
+          {images.map((image, idx) => (
             <Image
-              url={image.urls.full}
+              url={image.urls.regular}
               user={image.user}
-              key={image.id}
-              username={image.user.username}
-              userImageUrl={image.user.profile_image.medium}
-              profileUrl={image.user.links.html}
-              // onClickImage={onSelectImage}
+              key={idx}
+              id={image.id}
             />
           ))}
         </div>
@@ -78,6 +77,31 @@ const useStyles = createUseStyles({
   },
   spinner: {
     left: "50%",
+  },
+  imagePreviewModal: {
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    content: {
+      border: "none",
+      overflow: "hidden",
+      background: "transparent",
+      paddingRight: 120,
+      paddingLeft: 120,
+    },
+  },
+  infoModal: {
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    content: {
+      border: "none",
+      overflow: "hidden",
+      background: "transparent",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
 });
 export default LandingPage;
