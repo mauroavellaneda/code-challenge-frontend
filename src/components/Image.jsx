@@ -1,65 +1,79 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { Modal } from "react-bootstrap";
-import Avatar from "@material-ui/core/Avatar";
-import { Button } from "@material-ui/core";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
-const API_KEY = process.env.REACT_APP_API_KEY;
-
-const Image = ({ url, user, id }) => {
-  const [currentImageUrl, setCurrentImageUrl] = useState("");
-  const [show, setShow] = useState(false);
+const Image = (props) => {
   const classes = useStyles();
+  const { url, user, id, images } = props;
+  const [isOpen, setIsOpen] = useState(false);
+  const [current, setCurrent] = useState(0);
 
-  const handleClose = () => setShow(false);
+  const lenght = images.lenght;
 
-  const showModal = (id) => {
-    fetch(`https://api.unsplash.com/photos/${id}?client_id=${API_KEY}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentImageUrl(data.urls.regular);
-        setShow(true);
-      });
+  const nextPic = () => {
+    setCurrent(current === lenght - 1 ? 0 : current + 1);
+  };
+
+  const prevPic = () => {
+    setCurrent(current === 0 ? lenght - 1 : current - 1);
+  };
+
+  if (!Array.isArray(images) || images.lenght <= 0) {
+    return null;
+  }
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
   };
 
   return (
-    <div data-cy="landing" className={classes.ImageContainer}>
+    <div className={classes.ImageContainer}>
       <img
         width="100%"
         data-cy="image"
-        onClick={() => showModal(id)}
+        onClick={openModal}
         className={classes.image}
         src={url}
         alt=""
       />
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{user.name}</Modal.Title>
-          <Modal.Title>
-            <Avatar
-              style={{ marginLeft: "10px" }}
-              alt=""
-              src={user.profile_image.small}
-            />
-          </Modal.Title>
-        </Modal.Header>
+      <Modal isOpen={isOpen}>
+        <ModalHeader>
+          <Button onClick={prevPic} color="primary">
+            Prev
+          </Button>
+          <Button onClick={nextPic} color="primary" className={classes.next}>
+            Next
+          </Button>
+        </ModalHeader>
+        <ModalBody>
+          {images.map((image, index) => {
+            return (
+              <div
+                className={index === current ? "slide active" : "slide"}
+                key={index}
+              >
+                {index === current && (
+                  <img
+                    src={image.urls.small}
+                    alt=""
+                    className={classes.slideImg}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </ModalBody>
 
-        <Modal.Body>
-          <div className={classes.arrowR}>
-            <Button>Next</Button>
-          </div>
-          <div className={classes.arrowL}>
-            <Button>Next</Button>
-          </div>
-          <img width="100%" src={currentImageUrl} alt="" />
-        </Modal.Body>
-
-        <Modal.Footer>
-          <span>
-            <i class="bi bi-geo-alt-fill">{user.location}</i>
-          </span>
-        </Modal.Footer>
+        <ModalFooter>
+          <Button color="secondary" onClick={closeModal}>
+            Close
+          </Button>
+        </ModalFooter>
       </Modal>
     </div>
   );
@@ -82,6 +96,15 @@ const useStyles = createUseStyles({
   },
   arrowR: {
     float: "right",
+  },
+  slideImg: {
+    width: "400px",
+    height: "400px",
+    borderRadius: "10px",
+  },
+  next: {
+    position: "absolute",
+    right: "10px",
   },
 });
 

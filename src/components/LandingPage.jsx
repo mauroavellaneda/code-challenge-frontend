@@ -21,16 +21,12 @@ const LandingPage = () => {
       `https://api.unsplash.com/photos/?client_id=${API_KEY}&page=${page}`
     )
       .then((res) => {
-        setImages([...images, ...res.data]);
+        setImages(res.data);
       })
       .catch(() => {
         alert("Sadly, we only have 50 calls per hour");
       });
   };
-
-  if (!images) {
-    return <Spinner name="ball-spin-fade-loader" color="black" fadeIn="none" />;
-  }
 
   return (
     <>
@@ -53,7 +49,8 @@ const LandingPage = () => {
         <div className={classes.imageWrapper}>
           {images.map((image, idx) => (
             <Image
-              url={image.urls.regular}
+              images={images}
+              url={image.urls.small}
               user={image.user}
               key={idx}
               id={image.id}
@@ -77,6 +74,7 @@ const useStyles = createUseStyles({
   },
   spinner: {
     left: "50%",
+    marginBottom: "100px",
   },
   imagePreviewModal: {
     overlay: {
@@ -101,6 +99,18 @@ const useStyles = createUseStyles({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+    },
+  },
+  imagePreviewModalStyles: {
+    overlay: {
+      backgroundColor: "rgba(0,0,0,0.5)",
+    },
+    content: {
+      border: "none",
+      overflow: "hidden",
+      background: "transparent",
+      paddingRight: 120,
+      paddingLeft: 120,
     },
   },
 });
