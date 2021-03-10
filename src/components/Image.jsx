@@ -7,13 +7,14 @@ const Image = (props) => {
 
   return (
     <div
+    data-cy="landing"
       className={classes.ImageContainer}
       onClick={() => onClickImage(id, user)}
     >
       <img
+      data-cy="image"
         user={user}
         width="100%"
-        data-cy="image"
         className={classes.image}
         src={url}
         alt=""

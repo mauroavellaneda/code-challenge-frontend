@@ -10,13 +10,13 @@ describe("Landing page interface", () => {
   });
   it("should scroll to bottom and load more images", () => {
     cy.scrollTo("bottom", { duration: 4000 });
-    cy.get('[data-cy="landing"]').children().should("have.length", 20);
+    cy.get('[data-cy="landing"]').children().should("have.length", 10);
   });
   it("modal opens on click", () => {
     cy.get('[data-cy="image"]', { timeout: 10000 }).should("be.visible");
 
-    cy.get('[data-cy="image"]', { timeout: 20000 }).click(
-      { multiple: true },
+    cy.get('[data-cy="image"]', { timeout: 20000 }, { multiple: true }).click(
+      
       { force: true }
     );
     cy.get('[data-cy="modal"]', { timeout: 10000 }).should("be.visible");

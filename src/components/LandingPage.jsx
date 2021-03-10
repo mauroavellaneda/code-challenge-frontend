@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import Button from "@material-ui/core/Button";
+import { Dialog, DialogContent, DialogActions } from "@material-ui/core";
 import Image from "./Image";
 import Spinner from "react-spinkit";
 import Axios from "axios";
@@ -16,8 +17,7 @@ const LandingPage = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isPrevDisabled, setprevDisabled] = useState(false);
   const [page, setPage] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     fetchRandomImages();
@@ -35,11 +35,10 @@ const LandingPage = () => {
       });
   };
 
-  const onSelectImage = (id, user) => {debugger
+  const onSelectImage = (id, user) => {
     const selectedImageIndex = images?.findIndex((image) => image.id === id);
     setSelectedImage(images[selectedImageIndex]);
     setShowPreview(true);
-    setUserName(user);
   };
 
   useEffect(() => {
@@ -104,31 +103,37 @@ const LandingPage = () => {
         </div>
       </InfiniteScroll>
 
-      <Modal modalClassName={classes.modalContainer} isOpen={showPreview}>
-        <ModalHeader>
-          <h4>{userName.username}</h4>
-          <h5>{userName.location}</h5>
-
-
-          <Button onClick={onClickNext}>Next</Button>
-        </ModalHeader>
-        <ModalBody className={classes.modalBody}>
+      <Dialog
+        data-cy="modal"
+        open={showPreview}
+        PaperProps={{
+          style: {
+            minHeight: "75vh",
+            minWidth: "75vw",
+          },
+        }}
+      >
+        <DialogContent>
           <ImageSlider
             selectedImage={selectedImage}
             togglePreviewPopup={() => setShowPreview(false)}
+            toggleInfoPopup={() => setShowInfo(true)}
             isPrevDisabled={isPrevDisabled}
             onClickPrev={onClickPrev}
             onClickNext={onClickNext}
           />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button color="secondary" onClick={() => setShowPreview(false)}>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            size="medium"
+            variant="outlined"
+            color="primary"
+            onClick={() => setShowPreview(false)}
+          >
             Close
           </Button>
-          <h4>@{userName.instagram_username}</h4>
-        </ModalFooter>
-      </Modal>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
@@ -146,12 +151,6 @@ const useStyles = createUseStyles({
   spinner: {
     left: "50%",
     marginBottom: "100px",
-  },
-  modalContainer: {
-    boxShadow: [0, 0, "0.625rem", "rgba(0, 0, 0, 0.2)"],
-    width: "100rem",
-    top: "15rem",
-    height: "100rem",
   },
 });
 export default LandingPage;
