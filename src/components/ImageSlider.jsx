@@ -1,4 +1,3 @@
-import { Button } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import Spinner from "react-spinkit";
@@ -10,7 +9,6 @@ const ImageSlider = (props) => {
 
   const {
     selectedImage,
-    toggleInfoPopup,
     togglePreviewPopup,
     isPrevDisabled,
     onClickPrev,
@@ -50,6 +48,7 @@ const ImageSlider = (props) => {
       <div className={classes.ImageContainer}>
         <div className={classes.content}>
           <img
+            alt=""
             className={classes.image}
             src={selectedImage?.urls.small}
             onLoad={() => setImageLoaded(true)}

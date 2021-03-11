@@ -1,24 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { createUseStyles } from "react-jss";
 
 const Image = (props) => {
   const classes = useStyles();
-  const { url, user, id, onClickImage } = props;
+  const { url, id, onClickImage } = props;
 
   return (
     <div
-    data-cy="landing"
+      data-cy="landing"
       className={classes.ImageContainer}
-      onClick={() => onClickImage(id, user)}
+      onClick={() => onClickImage(id)}
     >
-      <img
-      data-cy="image"
-        user={user}
-        width="100%"
-        className={classes.image}
-        src={url}
-        alt=""
-      />
+      <img data-cy="image" className={classes.image} src={url} alt="" />
     </div>
   );
 };

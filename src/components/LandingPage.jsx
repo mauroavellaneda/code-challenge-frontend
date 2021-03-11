@@ -5,10 +5,8 @@ import Button from "@material-ui/core/Button";
 import { Dialog, DialogContent, DialogActions } from "@material-ui/core";
 import Image from "./Image";
 import Spinner from "react-spinkit";
-import Axios from "axios";
 import ImageSlider from "./ImageSlider";
-
-const API_KEY = process.env.REACT_APP_API_KEY;
+import fetchData from "../modules/data";
 
 const LandingPage = () => {
   const classes = useStyles();
@@ -16,26 +14,23 @@ const LandingPage = () => {
   const [selectedImage, setSelectedImage] = useState();
   const [showPreview, setShowPreview] = useState(false);
   const [isPrevDisabled, setprevDisabled] = useState(false);
-  const [page, setPage] = useState(1);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     fetchRandomImages();
   }, []);
 
-  const fetchRandomImages = () => {
-    Axios.get(
-      `https://api.unsplash.com/photos/?client_id=${API_KEY}&page=${page}`
-    )
-      .then((res) => {
-        setImages(res.data);
-      })
-      .catch(() => {
-        alert("Sadly, we only have 50 calls per hour");
+  const fetchRandomImages = async () => {
+    try {
+      await fetchData().then((res) => {
+        setImages([...images, ...res.data]);
       });
+    } catch (error) {
+      alert("Sadly, we only have 50 calls per hour");
+    }
   };
 
-  const onSelectImage = (id, user) => {
+  const onSelectImage = (id) => {
     const selectedImageIndex = images?.findIndex((image) => image.id === id);
     setSelectedImage(images[selectedImageIndex]);
     setShowPreview(true);
@@ -75,11 +70,8 @@ const LandingPage = () => {
   return (
     <>
       <InfiniteScroll
-        dataLength={images}
-        next={() => {
-          fetchRandomImages();
-          setPage(page + 1);
-        }}
+        dataLength={images.length}
+        next={fetchRandomImages}
         hasMore={true}
         loader={
           <Spinner
