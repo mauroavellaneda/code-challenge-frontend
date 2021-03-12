@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@material-ui/core/Button";
-import { Dialog, DialogContent, DialogActions } from "@material-ui/core";
+import { Dialog, DialogActions } from "@material-ui/core";
 import Image from "./Image";
 import Spinner from "react-spinkit";
 import ImageSlider from "./ImageSlider";
@@ -86,7 +86,6 @@ const LandingPage = () => {
           {images.map((image, idx) => (
             <Image
               url={image.urls.small}
-              user={image.user}
               key={idx}
               id={image.id}
               onClickImage={onSelectImage}
@@ -94,29 +93,28 @@ const LandingPage = () => {
           ))}
         </div>
       </InfiniteScroll>
-
       <Dialog
         data-cy="modal"
         open={showPreview}
         PaperProps={{
           style: {
             minHeight: "75vh",
-            minWidth: "75vw",
+            minWidth: "100vw",
+            padding: 0,
           },
         }}
       >
-        <DialogContent>
-          <ImageSlider
-            selectedImage={selectedImage}
-            togglePreviewPopup={() => setShowPreview(false)}
-            toggleInfoPopup={() => setShowInfo(true)}
-            isPrevDisabled={isPrevDisabled}
-            onClickPrev={onClickPrev}
-            onClickNext={onClickNext}
-          />
-        </DialogContent>
+        <ImageSlider
+          selectedImage={selectedImage}
+          togglePreviewPopup={() => setShowPreview(false)}
+          toggleInfoPopup={() => setShowInfo(true)}
+          isPrevDisabled={isPrevDisabled}
+          onClickPrev={onClickPrev}
+          onClickNext={onClickNext}
+        />
         <DialogActions>
           <Button
+            data-cy="modal-close-button"
             size="medium"
             variant="outlined"
             color="primary"

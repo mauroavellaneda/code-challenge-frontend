@@ -48,6 +48,7 @@ const ImageSlider = (props) => {
       <div className={classes.ImageContainer}>
         <div className={classes.content}>
           <img
+            data-cy="modal-image"
             alt=""
             className={classes.image}
             src={selectedImage?.urls.small}
@@ -62,11 +63,12 @@ const ImageSlider = (props) => {
               <div className={classes.user}>
                 <div className={classes.profilePicture}>
                   <Avatar
+                    data-cy="avatar"
                     alt=""
                     src={selectedImage?.user.profile_image.small}
                   />
                 </div>
-                <div className={classes.userName}>
+                <div data-cy="modal-name" className={classes.userName}>
                   <span className={classes.fullName}>
                     {selectedImage?.user.name}
                   </span>
@@ -102,19 +104,22 @@ const useStyles = createUseStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    "@media (max-width: 650px)": {
+      width: "100",
+    },
   },
   image: {
     height: "70%",
     width: "100",
-    // "@media (min-width: 1024px)": {
-    //   width: "80%",
-    //   height: "80%",
-    // },
+    "@media (max-width: 650px)": {
+      minWidth: "min-content",
+    },
   },
   header: {
     display: "flex",
     top: 0,
     position: "absolute",
+    marginTop: "1rem",
   },
   user: {
     display: "flex",
@@ -130,7 +135,7 @@ const useStyles = createUseStyles({
     bottom: 10,
     position: "absolute",
     "@media (max-width: 650px)": {
-      left: 10,
+      left: 0,
     },
   },
 });

@@ -12,15 +12,21 @@ describe("Landing page interface", () => {
   });
 
   it("should scroll to bottom and load more images", () => {
-    cy.scrollTo("bottom", { duration: 4000 });
+    cy.scrollTo("bottom", { duration: 5000 });
     cy.get('[data-cy="landing"]').children().should("have.length", 20);
   });
 
-  it("modal opens on click", () => {
-    cy.get('[data-cy="image"]', { timeout: 10000 }).should("be.visible");
-    cy.get('[data-cy="image"]', { timeout: 20000 }, { multiple: true }).click({
+  it("modal opens on click, finds elements within and closes", () => {
+    cy.get('[data-cy="image"]').should("be.visible");
+    cy.get('[data-cy="image"]').click({
+      multiple: true,
       force: true,
     });
-    cy.get('[data-cy="modal"]', { timeout: 10000 }).should("be.visible");
+    cy.get('[data-cy="modal"]').should("be.visible");
+    cy.get('[data-cy="modal-name"]').should("be.visible");
+    cy.get('[data-cy="avatar"]').should("be.visible");
+    cy.get('[data-cy="modal-image"]').should("be.visible");
+    cy.get('[data-cy="modal-close-button"]').contains("Close").click();
+    cy.get('[data-cy="modal"]').should("not.exist");
   });
 });
